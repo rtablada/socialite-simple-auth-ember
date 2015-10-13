@@ -1,3 +1,12 @@
-<h2 id="title">Welcome to Ember</h2>
+<h2 id='title'>Welcome to Ember.js</h2>
+
+{{#if session.isWorking}}
+  One sec while we get you signed in...
+{{else}}
+  {{error}}
+  <button {{action 'signInViaGithub'}}>
+    Jibber
+  </button>
+{{/if}}
 
 {{outlet}}
