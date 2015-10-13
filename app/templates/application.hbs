@@ -1,16 +1,11 @@
-<h2 id='title'>Welcome to Ember.js</h2>
+<h2 id='title'>Ember Simple Auth &amp; Torii &amp; Laravel Socialite</h2>
 
-{{#if session.isWorking}}
-  One sec while we get you signed in...
+{{#if session.isAuthenticated}}
+  <button {{ action 'invalidateSession' }}>Logout</button>
 {{else}}
-  {{error}}
   <button {{action 'signInViaGithub'}}>
-    Jibber
+    Login With Github
   </button>
-{{/if}}
-
-{{#if email}}
-<h3>Email: {{email}}</h3>
 {{/if}}
 
 {{outlet}}

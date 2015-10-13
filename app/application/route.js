@@ -1,32 +1,33 @@
 import Ember from 'ember';
-import config from 'app-thing/config/environment';
+import ApplicationRouteMixin from 'simple-auth/mixins/application-route-mixin';
 
-console.log(config);
-
-export default Ember.Route.extend({
+export default Ember.Route.extend(ApplicationRouteMixin, {
   actions: {
     signInViaGithub: function() {
       const controller = this.controller;
 
-      this.get('torii').open('github-oauth2').then((authData) => {
-        Ember.$.ajax({
-          url: 'http://localhost:8000/session',
-          type: 'GET',
-          data: { code: authData.authorizationCode },
-          dataType: 'json',
-          success(result) {
-            controller.set('email', result.email);
-          },
+      this.get('session').authenticate('simple-auth-authenticator:torii', 'github-oauth2');
+    },
 
-          error: (jqXHR, textStatus, errorThrown) => {
-            debugger;
-          },
-        });
+    sessionAuthenticationSucceeded() {
+      alert('hey');
+      const secure = this.get('session.secure');
+      const code = secure.authorizationCode;
 
-        console.log(authData);
-        alert('success!');
-      }, (error) => {
-        this.controller.set('error', 'Could not sign you in: ' + error.message);
+      Ember.$.ajax({
+        url: 'http://localhost:8000/session',
+        type: 'GET',
+        data: { code },
+        dataType: 'json',
+        success: (result) => {
+          result.authenticator = 'simple-auth-authenticator:oauth2-password-grant';
+
+          this.get('session.store').persist({secure:result});
+        },
+
+        error: (jqXHR, textStatus, errorThrown) => {
+          debugger;
+        },
       });
     },
   },
