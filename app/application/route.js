@@ -6,9 +6,24 @@ console.log(config);
 export default Ember.Route.extend({
   actions: {
     signInViaGithub: function() {
-      this.get('torii').open('github-socialite').then((authData) => {
+      const controller = this.controller;
+
+      this.get('torii').open('github-oauth2').then((authData) => {
+        Ember.$.ajax({
+          url: 'http://localhost:8000/session',
+          type: 'GET',
+          data: { code: authData.authorizationCode },
+          dataType: 'json',
+          success(result) {
+            controller.set('email', result.email);
+          },
+
+          error: (jqXHR, textStatus, errorThrown) => {
+            debugger;
+          },
+        });
+
         console.log(authData);
-        debugger;
         alert('success!');
       }, (error) => {
         this.controller.set('error', 'Could not sign you in: ' + error.message);

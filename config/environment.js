@@ -26,6 +26,7 @@ module.exports = function(environment) {
         'github-oauth2': {
           apiKey: process.env.GITHUB_API_KEY,
           redirectUri: 'http://localhost:4200',
+          scope: 'user',
         },
       },
     },
